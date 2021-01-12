@@ -11,6 +11,7 @@ const {
 const tokenize = (input) => {
     let cursor = 0;
     const tokens = [];
+    let quoteCounter = 0;
 
     while (cursor < input.length) {
 
@@ -58,15 +59,27 @@ const tokenize = (input) => {
         }
 
         if (isQuote(character)) {
+            let string = '';
+
+            while (!isQuote(input[++cursor])) {
+                string += input[cursor];
+            }
             tokens.push({
-                type: 'Quote',
-                value: character
+                type: 'String',
+                value: string
             });
             cursor++;
             continue;
         }
 
-        cursor++;
+        else {
+            tokens.push({
+                type: 'Unidentified Character',
+                value: character
+            });
+            cursor++;
+            continue;
+        }
     }
 
     return tokens;
